@@ -1,0 +1,203 @@
+# Lunix Grundlagen
+## Was ist linux?
+Linux ist ein Open Source Betriebssystemkernel. Es wird von der Community gemanaged.
+
+## Was ist eine Distrubition?
+Ein Lunix-Kernel zusammen mit weiteren Programmen anderer Hersteller, eigene Entwickelungen, Support und Dokumentation. Dies wird als Packet geliefert und stellt als Packet eine Distribution dar.
+
+## Erste Schritte
+### Die Konsole
+
+Die Konsole ist eine Schnittstelle zwischen OS und Benutzer.
+Geben Sie folgenden Befehl ein:
+```
+cd Schreibtisch && touch HalloWelt.txt
+```
+Was ist passiert?
+
+Es hat in die Directory "Schreibtisch" gewechselt und eine leere Textdatei names HalloWelt.txt erstellt.
+
+Lösche die Datei wieder:
+```
+rm HalloWelt.txt
+```
+
+### Ausführen von Befehlen
+![Alt text](image.png)
+
+Bash struktur:
+
+| Objekt | Name | Beschreibung |                    
+|-------|-------|-------|
+| vmadmin | Benutzer | Name des aktuellen Benutzers |
+| vmLS1 | Hostname | Hostname der aktuellen Maschine |
+| ~ | CWD | Current working directory (~ ist Heimverzeichnus) | 
+| $ | Benutzertyp | Normalerweise $ bei user und # bei root |
+
+### Hilfe für Befehle
+Beispiel für "cp"
+```
+cp -h
+cp --help
+man cp
+```
+
+### Bash Tastenbefehle
+| Kürzel | Beschreibung |                    
+|-------|-------|
+| CTRL + C | Laufendes Kommando abbrechen (SIGTERM) |
+| CTRL + A/E | Cursor zum Anfang/Ende verschieben |
+| CTRL + K | Vom Cursor bis zum Ende löschen | 
+| CTRL + L | Bildschirm leeren |
+| CTRL + D | End of File (EOF) Senden |
+| Pfeil hoch/runter | Durch die Befehle der History wechseln |
+
+### Bash history
+Rufe hilfe von history auf:
+```
+man history
+```
+
+Zeige die history an:
+```
+history
+```
+
+Lösche die history:
+```
+history -c
+```
+
+## Dateimanagement
+### Dateisystem
+Die Dateisystem setzt folgende Sachen fest:
+1. Datenverwaltung
+2. Zugriffsrechte
+3. Schreib- und Lesegeschwindigkeiten
+4. Maximale Datei- und Volumengrösse
+
+```bash
+/           # root Verzeichnis
+├── bin     # binäre Anwendungen
+├── boot    # Dateien die zum Starten des Systems benötigt werden
+├── dev     # Gerätedateien (drivers)
+├── etc     # Konfigurationsdateien, Startscripte, etc.
+├── home    # Persönliche Verzeichnisse der User
+├── lib     # Systembibliotheken (libs)
+├── media   # automatisch eingebundene Partitionen von externen Geräten
+├── mnt     # manuell eingebundene Dateisysteme
+├── opt     # optionale Anwendungen von Dritthersteller
+├── proc    # dynamisches Verzeichnis, mit z.B. Info zu Systemstatus
+├── root    # Persönlicher Verzeichnis von root
+├── run     
+├── sbin
+├── srv     # Dateien welche anderen Systemen bereitgestellt werden
+├── sys     # Systemdateien
+├── tmp     # temporäre Dateien
+├── usr     # Anwendung oder Dateien für alle User
+└── var     # variable Dateien, wie z.B. Logs
+```
+### Dateimanagement
+Finde mit pwd das aktuelle Verzeichnis heraus:
+```
+/home/vmadmin
+```
+In welchem Verzeichnis ist man nach dem Aufruf von cd ohne Argument?
+```
+/home/vmadmin (Heimverzeichnis vom User)
+```
+### Besitzer und Berechtigungen
+Als beispiel nehmen wir das Verzeichnis /etc
+![](image-1.png)
+
+Als erstes wird der Typ Datei angezeigt (hier d).
+Die Wichtigsten sind:
+| Zeichen | Bedeutung |                    
+|-------|-------|
+| - | Gewöhnliche Datei |
+| d | Verzeichnis |
+| l | Symbolischer Link (symlink) | 
+
+Lesen, Schreiben und Ausführen: r,w und x stehen für read, write und execute. In blau werden die Berechtigungen vom User angezeigt, in grün dessen der Gruppe und schwarz sind die Berechtigungen von "others"
+
+Mit der folgenden Tabelle wird der Befehl chmod konfiguriert.
+| rwx | Oktaler Wert |                    
+|-------|-------|
+| 001 | 1 |
+| 010 | 2 |
+| 011 | 3 |
+| 100 | 4 |
+| 101 | 5 |
+| 110 | 6 |
+| 111 | 7 | 
+
+## Ein- und Ausgabelenkung
+Wenn ein Programm seine Daten auf die Kommandozeile schreibt, verwendet es sogenannte Kanäle, wobei jedes POSIX kompatible Programm mindestens folgende hat:
+| Nr. | Bezeichnung | Steht für | Eigenschaft |                    
+|-------|-------|-------|-------|
+| 0 | STDIN | Standard Input | Eingabe in das Pragramm |
+| 1 | STDOUT | Standard Output | Ausgabe des Programms |
+| 2 | STDERR | Standard Error | Ausgabe von Fehlermeldungen des Programms |
+
+Mittels folgender Zeichen kann die Ein- und Ausgabe umgelenkt werden:
+| Operation | Umlenkung von | Erklärung |
+|-------|-------|-------|
+| cmd > file | STDOUT | Ausgabe von cmd wird in die Datei "file" geschriben, Fehlermeldungen weiterhin in der Kommandozeile. | 
+| cmd 2>/dev/null | STDERR | Alle Fehlermeldungen werden in null geschrieben, daher verworfen. |
+| cmd < file | STDIN | cmd bekommt als Eingabe den Inhalt der Datei "file" |
+
+## Pipes
+Die Ein- und Ausgabeumlenkung bei Prozessen nennt man Pipeing. Als Beispiel:
+```bash
+cat /proc/meminfo | sort
+# Output
+Active:          5445460 kB
+Active(anon):       7544 kB
+Active(file):    5437916 kB
+AnonHugePages:         0 kB
+AnonPages:       4133572 kB
+Bounce:                0 kB
+Buffers:          458692 kB
+Cached:         12175956 kB
+CommitLimit:    18364536 kB
+Committed_AS:   17015264 kB
+DirectMap1G:    20971520 kB
+DirectMap2M:    11962368 kB
+DirectMap4k:      293476 kB
+Dirty:              5712 kB
+
+```
+## Stringverarbeitung
+### Filtern (greppen)
+Mit grep kann Text durchsucht und gefiltert werden. Der Syntax sieht wir folgt aus:
+```
+grep [options] pattern [file]
+```
+Als Beispiel "LOOPBACK" greppen aus fer Ausgabe von ```ip -o link```
+```bash
+ip -o link | grep -i loopback
+# Output
+1: lo: <LOOPBACK,UP,LOWER_UP> mtu 65536 qdisc noqueue state UNKNOWN mode DEFAULT group default qlen 1000\    link/loopback 00:00:00:00:00:00 brd 00:00:00:00:00:00
+```
+### Manipulieren von Strings
+Um Zeichenketten (Strings) zeilenweise zu verarbeiten, kann cut benutzt werden.
+Als Beispiel benutzen wir folgenden Befehl:
+```
+cut -f1 /etc/passwd
+```
+Dies gibt das gesamte passwd Datei aus, wie muss es erweitert werden damit nur die Usernames ausgegeben werden?
+```
+cut -f1 -d /etc/passwd
+```
+## Berechtigungen
+### Der su-Befehl
+Mit dem Befehl su (substitute user identity) kann die Identität eines anderen Benutzers angenommen werden. Wenn su ohne aurgument ausgeführt wird kann man root werden.
+```
+vmadmin@vmLS1:~$ su
+Password:
+root@vmLS1:/home/vmadmin
+```
+
+### Der sudo-Befehl
+Damit nicht zum root gewechselt werden muss, jedoch gleich als root Sachen ausgeführt werden können kann der befehl sudo gebraucht werden.
+su - "do"
