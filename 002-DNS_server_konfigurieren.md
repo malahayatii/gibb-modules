@@ -101,13 +101,13 @@ $TTL    3600
                         1H )
 
 @       IN      NS      vmls1.dmz.mattefit.ch.
-vmlf1   IN      A       192.168.220.1
-vmls1   IN      A       192.168.220.10
+vmlf1   IN      A       192.168.120.1
+vmls1   IN      A       192.168.120.10
 ```
 ```yaml
 ;
-; Zonendatei für 220.168.192.in-addr.arpa.
-; /etc/bind/db.192.168.220
+; Zonendatei für 120.168.192.in-addr.arpa.
+; /etc/bind/db.192.168.120
 ;
 $TTL    3600
 @       IN      SOA     vmls1.dmz.mattefit.ch.      root.mattefit.ch. (
@@ -135,14 +135,13 @@ zone "dmz.mattefit.ch" {
 zone "220.168.192.in-addr.arpa" {
         type master;
         notify no;
-        file "/etc/bind/db.192.168.220";
+        file "/etc/bind/db.192.168.120";
 };
 ```
 # Weitere Zonen einrichten
 ## Zonen für das LAN
 1. Eine Zone für den LAN-Bereich mit den Host LF1 und WP1 
 2. Eine Eine Reverse Zone für den LAN-Bereich mit Records für die erwähnten Hosts
-3. Zonen für die Mitarbeiterwebseiten
 
 ### lan.mattefit.ch zone
 ```yaml
@@ -194,4 +193,39 @@ zone "110.168.192.in-addr.arpa" {
         notify no;
         file "/etc/bind/db.192.168.110";
 };
+```
+
+## Zonen für Mitarbeiter-Webseiten
+DNS-Zone "staff.mattefit.ch"
+```yaml
+//
+// staff
+//
+zone "staff.mattefit.ch" {
+    type master;
+    file "/etc/bind/db.staff.mattefit.ch"
+};
+```
+Zonefile with CNAME and MX records
+```yaml
+; Zone file for staff.mattefit.ch
+$TTL 3600   ; 1 hour (you can adjust this value as needed)
+
+@   IN  SOA vmls1.dmz.mattefit.ch. root.mattefit.ch. (
+    1       ; Serial number
+    1H      ; Refresh
+    2H      ; Retry
+    1D      ; Expire
+    1H )    ; Negative caching TTL
+
+; Name server record
+@   IN  NS  vmls1.dmz.mattefit.ch.
+
+; CNAME records
+henda   IN  CNAME vmls1.dmz.mattefit.ch.
+admin   IN  CNAME vmls1.dmz.mattefit.ch.
+
+; MX record for mail server
+@   IN  MX  10  ex10.host-ed.mail.
+
 ```
