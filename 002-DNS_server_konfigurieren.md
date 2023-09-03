@@ -196,19 +196,21 @@ zone "110.168.192.in-addr.arpa" {
 ```
 
 ## Zonen für Mitarbeiter-Webseiten
-DNS-Zone "staff.mattefit.ch"
+### DNS-Zone "staff.mattefit.ch"
 ```yaml
 //
 // staff
 //
 zone "staff.mattefit.ch" {
     type master;
-    file "/etc/bind/db.staff.mattefit.ch"
+    file "/etc/bind/db.ch.mattefit.staff"
 };
 ```
-Zonefile with CNAME and MX records
+### Zonefile with CNAME and MX records
 ```yaml
+;
 ; Zone file for staff.mattefit.ch
+;
 $TTL 3600   ; 1 hour (you can adjust this value as needed)
 
 @   IN  SOA vmls1.dmz.mattefit.ch. root.mattefit.ch. (
@@ -227,5 +229,4 @@ admin   IN  CNAME vmls1.dmz.mattefit.ch.
 
 ; MX record for mail server
 @   IN  MX  10  ex10.host-ed.mail.
-
 ```
