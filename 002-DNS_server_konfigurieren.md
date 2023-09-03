@@ -86,7 +86,7 @@ dig @a.root-servers.net | grep -E -v ';|^$' > /etc/bind/db.root
 ![Alt text](image.png)
 
 ## Zonendatei für die DMZ
-# DMZ-Zone dmz.mattefit.ch
+### DMZ-Zone dmz.mattefit.ch
 ```yaml
 ;
 ; Zonendatei für dmz.mattefit.ch.
@@ -136,5 +136,62 @@ zone "220.168.192.in-addr.arpa" {
         type master;
         notify no;
         file "/etc/bind/db.192.168.220";
+};
+```
+# Weitere Zonen einrichten
+## Zonen für das LAN
+1. Eine Zone für den LAN-Bereich mit den Host LF1 und WP1 
+2. Eine Eine Reverse Zone für den LAN-Bereich mit Records für die erwähnten Hosts
+3. Zonen für die Mitarbeiterwebseiten
+
+### lan.mattefit.ch zone
+```yaml
+;
+; Zonendatei für lan.mattefit.ch.
+; /etc/bind/db.ch.mattefit.lan
+;
+$TTL    3600
+@       IN      SOA     vmwp1.lan.mattefit.ch.      root.mattefit.ch. (
+                         1
+                        1H
+                        2H
+                        1D
+                        1H )
+
+@       IN      NS      vmwp1.lan.mattefit.ch.
+vmlf1   IN      A       192.168.110.1
+vmwp1   IN      A       192.168.110.10
+```
+```yaml
+;
+; Zonendatei für 110.168.192.in-addr.arpa.
+; /etc/bind/db.192.168.110
+;
+$TTL    3600
+@       IN      SOA     vmwp1.lan.mattefit.ch.      root.mattefit.ch. (
+                         1
+                        1H
+                        2H
+                        1D
+                        1H )
+
+@       IN      NS      vmwp1.lan.mattefit.ch.
+1       IN      PTR     vmlf1.lan.mattefit.ch.
+10      IN      PTR     vmwp1.lan.mattefit.ch.
+```
+Eintrag in named.conf.local
+```yaml
+//
+// LAN
+//
+zone "lan.mattefit.ch" {
+        type master;
+        notify no;
+        file "/etc/bind/db.ch.mattefit.lan";
+};
+zone "110.168.192.in-addr.arpa" {
+        type master;
+        notify no;
+        file "/etc/bind/db.192.168.110";
 };
 ```
