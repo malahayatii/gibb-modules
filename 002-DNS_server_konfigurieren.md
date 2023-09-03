@@ -211,7 +211,7 @@ zone "staff.mattefit.ch" {
 ;
 ; Zone file for staff.mattefit.ch
 ;
-$TTL 3600   ; 1 hour (you can adjust this value as needed)
+$TTL 3600   ; 1 hour 
 
 @   IN  SOA vmls1.dmz.mattefit.ch. root.mattefit.ch. (
     1       ; Serial number
