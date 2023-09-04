@@ -101,8 +101,8 @@ $TTL    3600
                         1H )
 
 @       IN      NS      vmls1.dmz.mattefit.ch.
-vmlf1   IN      A       192.168.120.1
-vmls1   IN      A       192.168.120.10
+vmlf1   IN      A       192.168.120.2
+vmls1   IN      A       192.168.120.61
 ```
 ```yaml
 ;
@@ -118,8 +118,8 @@ $TTL    3600
                         1H )
 
 @       IN      NS      vmls1.dmz.mattefit.ch.
-1       IN      PTR     vmlf1.dmz.mattefit.ch.
-10      IN      PTR     vmls1.dmz.mattefit.ch.
+2       IN      PTR     vmlf1.dmz.mattefit.ch.
+61      IN      PTR     vmls1.dmz.mattefit.ch.
 ```
 Damit die Zonen von unserem Bind gelesen werden müssen folgende Einträge in /etc/bind/named.conf.local
 gemacht werden
@@ -132,7 +132,7 @@ zone "dmz.mattefit.ch" {
         notify no;
         file "/etc/bind/db.ch.mattefit.dmz";
 };
-zone "220.168.192.in-addr.arpa" {
+zone "120.168.192.in-addr.arpa" {
         type master;
         notify no;
         file "/etc/bind/db.192.168.120";
