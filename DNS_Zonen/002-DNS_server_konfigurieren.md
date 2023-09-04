@@ -58,7 +58,7 @@ network:
         - to: default
           via: 192.168.120.2
       nameservers:
-        addresses: [ 192.168.120.61 ]
+        addresses: [ 192.168.120.61 ] # 127.0.0.1 würde auch funktionieren
         search: [ smartlearn.dmz ]
 ```
 
