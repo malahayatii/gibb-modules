@@ -4,7 +4,7 @@
 sudo apt install bind9
 ```
 ## Konfiguration
-Unter /etc/bind wurden folgende Dateien erstellt:
+Unter /etc/bind wurden automatisch folgende Dateien erstellt:
 ```
 named.conf
 named.conf.default-zones
@@ -230,3 +230,17 @@ admin   IN  CNAME vmls1.dmz.mattefit.ch.
 ; MX record for mail server
 @   IN  MX  10  ex10.host-ed.mail.
 ```
+# Begriffs Erklärung
+| Abbreviation | Name | Syntax | Erklärung |
+|--------------|------|-----------|--------|
+| TTL | Time to live | $TTL 3600 | Dies definiert wie lange die Records von anderen DNS-Server chached werden |
+| SOA | Start of Authority | Relevante Informationen über die DNS Zone | @ IN [primäre DNS Server] (1 1H 2H 1D 1H) |
+| 1 | | | Seriennummer die inkrementiert wird bei Zonen Updates |
+| 1H | | | Refresh time (1 Stunde) -> wie of sekundäre Server nach Updates fragen sollen |
+| 2H | | | Retry time (2 Stunden) -> wie lange sekundäre Server warten sollen wenn sie die primäre nicht erreichen können |
+| 1D | | | Expiry time (1 Tag) -> wie lange die Zone gültig ist
+| 1H | | | minimum TTL (1 Stunde) -> default Wert
+| NS | Nameserver | @ IN NS [DNS Server Name] | Designiert die primäre DNS Server |
+| PTR | Pointer Record | 1 IN PTR [ Hostname ] | Reverse Lookup Mapping |
+| CNAME | Canonical Name | [ subdomain ] IN CNAME [ DNS Server ] | wahre/eindeutige Name des Ziels |
+| MX | Mail Exchange | @ IN MX [ Prio ] [ Mailserver ] | Weist auf externer Mailserver |
