@@ -102,3 +102,53 @@ Restart apache2 service
 ```bash
 sudo systemctl restart apache2
 ```
+
+### Virtual-Host anpassen
+ch.mattefit.admin.conf
+```html
+<VirtualHost *:80>
+ServerAlias admin.staff.mattefit.ch
+DocumentRoot /srv/www/ch.mattefit.staff.admin/htdocs
+<Directory /srv/www/ch.mattefit.staff.admin/htdocs>
+```
+
+ch.mattefit.henda.conf
+```html
+<VirtualHost *:80>
+DocumentRoot /srv/www/ch.mattefit.staff.XYZ/htdocs
+<Directory /srv/www/ch.mattefit.staff.XYZ/htdocs>
+```
+Apache2 neustarten und jetzt kann mit den jeweiligen URL auf den richtigen VirtualHost aufgelöst werden.
+
+### Verzeichnis-Listing aktivieren
+in ch.mattefit.henda.conf folgende Zeilen hinzufügen
+```html
+<Directory /srv/www/ch.mattefit.staff.XYZ/htdocs/downloads>
+    AllowOverride All
+    Options +Indexes
+</Directory>
+```
+### admin.staff.mattefit.ch Passwortschützen
+in /srv/www/ch.mattefit.staff.admin
+```bash
+sudo touch .htpasswd
+sudo htpasswd -c .htpasswd admin
+sudo htpasswd .htpasswd sekretariat
+```
+inhalt der Datei:
+```bash
+admin:[verschlüsselter_Passwort]
+sekretariat:[verschlüsselter_Passwort]
+```
+create entry in ch.mattefit.admin.conf
+```html
+<Directory /srv/www/ch.mattefit.staff.admin/htdocs>
+    AuthType Basic
+    AuthName "Restricted Area"
+    AuthUserFile /srv/www/ch.mattefit.staff.admin/.htpasswd
+    Require valid-user
+</Directory>
+```
+### Wie der Passwortschutz funktioniert 
+Beim aufruf des Verzeichnis erhält der Browser 401 Unauthorized zurück. Somit fragt der Browser nach Username und Passwort und übermittelt diese im Header-Feld Authorization dem Server
+
