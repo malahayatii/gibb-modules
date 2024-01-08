@@ -11,7 +11,7 @@ Important output
 Troubleshoot https://<wazuh-dashboard-ip>:443 unreachable
 When trying to access the dashboard using the IP-address of the wazuhvm:443 an error occurs. Without entering port 443 use the VM's IP-address as the webaddress
 
-### Deploy Agent for LP1
+### Deploy Agent for LP1 Ubuntu Client
 Select Package DEB amd64, then enter the IP-address of LP1 which is 192.168.110.31. Wazuh will generate installation commands for the target. Copy and paste them to the target machine.
 
 Install the wazuh agent
@@ -35,4 +35,14 @@ Invalid server address found: 'MANAGER_IP'
 ```
 This can be adjusted in the config file under /var/ossec/etc/ossec.conf
 
+### Deploy Agent for WP1 Windows Client
+Identical process to LP1, with the only differences being that the commands are to be executed in powershell with administrator privileges
 
+Install the wazuh-agent
+```ps1
+Invoke-WebRequest -Uri https://packages.wazuh.com/4.x/windows/wazuh-agent-4.7.1-1.msi -OutFile ${env.tmp}\wazuh-agent; msiexec.exe /i ${env.tmp}\wazuh-agent /q WAZUH_MANAGER='192.168.110.32' WAZUH_REGISTRATION_SERVER='192.168.110.32' 
+```
+Start the service
+```ps1
+NET START WazuhSvc
+```
