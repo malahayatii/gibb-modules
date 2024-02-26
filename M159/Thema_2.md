@@ -7,11 +7,17 @@
 
 # Installation und Konfiguration vmLS1
 Als erstes wird die Search-Zone von LS1 unter `/etc/netplan/00-eth0.yaml` folgendermassen angepasst:
+
 ![alt text](images/00-eth0.yaml.png)
+
 Damit der Domain Controller sich selber nach Namen kennt, wird der hostname in `/etc/hosts` eingetragen:
+
 ![alt text](images/etc-hosts.png)
+
 Anschliessend wird der Hostnamen in /etc/hostname angepasst:
+
 ![alt text](images/hostname.png)
+
 Repositories und Packete aktualisieren, danach das Gerät Neustarten:
 ```bash
 sudo apt update && sudo apt upgrade -y && sudo snap refresh -y && sudo reboot
@@ -23,6 +29,7 @@ sudo apt install samba smbclient heimdal-clients
 Während der Installtion sollte es nach folgenden Informationen fragen:
 - Kerberos Realm: SAM159.IET-GIBB.CH
 - FQDN: vmLS1.sam159.iet-gibb.ch
+
 Weitere Abhängikeiten installieren:
 ```bash
 sudo apt install acl attr build-essential libacl1-dev libattr1-dev \
@@ -40,8 +47,11 @@ mv /etc/samba/smb.conf /etc/samba/smb.conf.orig
 samba-tool domain provision
 ```
 Die folgenden Eingaben eintragen
+
 ![alt text](images/samba-tool.png)
+
 Dies reultiert in folgender Konfigurations-Datei
+
 ![alt text](images/smbconf.png)
 
 Da das DNS Dienst von samba zu Verfügung gestellt wird müssen wir das DNS-resolving ausschalten
@@ -62,11 +72,13 @@ sudo systemctl enable samba-ad-dc
 sudo systemctl start samba-ad-dc
 ```
 Aber dies resultiert in ein Fehler da der Service nicht exisitiert. Ich erstelle ihn selbst unter /etc/systemd/system/samba-ad-cd.service folgendermassen:
+
 ![alt text](images/samba-ad-dc.png)
 
 Danach die vorherigen Befehle nochmals ausführen.
 
 Samba konfigurieren für die Benutzung des Kerberos-Authentifizierungsdienst unter /etc/krb5.conf
+
 ![alt text](images/krb5.conf.png)
 
 Netzwerk testen
@@ -75,6 +87,7 @@ sudo systemctl start systemd-resolved
 sudo resolvectl status
 ```
 ![alt text](images/resolvectl.png)
+
 und systemd-resolve wieder ausschalten:
 ```bash
 sudo systemctl stop systemd-resolved
