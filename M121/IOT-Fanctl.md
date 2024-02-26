@@ -38,7 +38,7 @@ Duty cycle percentage = (255 / 255) * 100 = 100%
 
 ### System-Diagram
 
-![alt text](/M121/images/system-diagram.png.png)
+![alt text](/M121/images/system-diagram.png)
 
 ### Truth Table
 
