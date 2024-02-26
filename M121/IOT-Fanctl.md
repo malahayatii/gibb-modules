@@ -1,10 +1,12 @@
 # M121 IOT Fan Control Project
 
 ## Schema
+IoT-Education-Board 1.3.1
 
 ![alt text](/M121/m121-schema.jpg)
 
 ## Code
+Using the esp32 olimex dev-lipo
 
 ```C
 // def für led
