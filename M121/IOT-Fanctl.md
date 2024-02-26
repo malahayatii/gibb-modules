@@ -92,7 +92,6 @@ DallasTemperature sensors(&oneWire);
 #define STOP  (digitalWrite(INA_PIN,LOW),digitalWrite(INB_PIN,LOW))
 
 int maxspeed = 255;
-int medspeed = 175;
 int minspeed = 100;
 int speed = 0;
 
@@ -117,6 +116,20 @@ void setup() {
   ledcAttachPin(INB_PIN, PWM_KANAL_1);
 }
 
+float mapFloat(float x, float in_min, float in_max, float out_min, float out_max) {
+  // Ensure that x is within the input range
+  if (x < in_min) {
+    x = in_min;
+  } else if (x > in_max) {
+    x = in_max;
+  }
+  
+  // Map x from the input range to the output range
+  float mappedValue = (x - in_min) * (out_max - out_min) / (in_max - in_min) + out_min;
+  
+  return mappedValue;
+}
+
 void loop() {
 
   redOFF;
@@ -126,26 +139,36 @@ void loop() {
   // get temp
   sensors.requestTemperatures();
   float temperatureC = sensors.getTempCByIndex(0);
-
+  // print temp to serial monitor
   Serial.print(temperatureC);
   Serial.println("*C");
-  delay(250);
+  
+  // calculate mappedspeed > linear progression
+  float mappedspeed = mapFloat(temperatureC, 22, 25, minspeed, maxspeed);
+  // calculate reference number for fanspeed
+  int fanRPM = map(mappedspeed, 0, 255, 0, 100);
+  // print rmp
+  Serial.print("Fan RPM: ");
+  Serial.print(fanRPM);
+  Serial.println("%");
 
-  if (temperatureC <= 23.0) {
+  delay(50);
+
+  if (temperatureC <= 22.0) {
     greenON;
     ledcWrite(PWM_KANAL_0,0); // INA = 0
     ledcWrite(PWM_KANAL_1,minspeed); // INB = 255
-    delay(250);
-  } else if (temperatureC > 23.0 && temperatureC < 25.0) {
+    delay(50);
+  } else if (temperatureC > 22.0 && temperatureC < 25.0) {
     yellowON;
     ledcWrite(PWM_KANAL_0,0); // INA = 0
-    ledcWrite(PWM_KANAL_1,medspeed); // INB = 255
-    delay(250);
+    ledcWrite(PWM_KANAL_1,mappedspeed); // INB = 255
+    delay(50);
   } else {
     redON;
     ledcWrite(PWM_KANAL_0,0); // INA = 0
     ledcWrite(PWM_KANAL_1,maxspeed); // INB = 255
-    delay(250);
+    delay(50);
   }
 }
 ```
