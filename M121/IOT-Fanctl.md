@@ -6,7 +6,7 @@ In this document, our M121 project is presented. Its aim is to function similarl
 
 ## Schema
 
-IoT-Education-Board 1.3.1
+IoT-Education-Board 1.3.1 with cabling for the fan motor, esp32 and temperature sensor
 
 ![alt text](/M121/images/m121-schema.jpg)
 
