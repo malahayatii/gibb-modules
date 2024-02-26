@@ -52,6 +52,12 @@ Duty cycle percentage = (255 / 255) * 100 = 100%
 |  H  |  H  |      Brake          |
 |  L  |  L  |      Brake          |
 
+### Using map() to create a linear progression
+
+We used the map() function to generate a linear progression for the RPM. This is dependant on the current state of the duty cycle, which gets its values depending on the current temperature.
+
+![alt text](/M121/images/visualization-map.png)
+
 ## Code
 
 Using the esp32 olimex dev-lipo
