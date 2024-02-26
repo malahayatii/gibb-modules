@@ -1,8 +1,8 @@
 # M121 IOT Fan Control Project
 
-In diesem Dokument wird unser M121-Projekt vorgestellt. Dieses hat das Ziel, ähnlich wie eine CPU-Kühlung zu funktionieren: Es wird ein Temperatur-Sensor genutzt, welcher die aktuelle Temperatur ausgibt. Abhängig von vordefinierten Temperatur-Intervallen wird die Geschwindigkeit des "FanMotors" erhöht; auch leuchtet ein LED um die entsprechende Stufe anzuzeigen (Grün: "OK", Gelb: "Warm", Rot: "Heiss").
+In this document, our M121 project is presented. Its aim is to function similarly to a CPU cooler: A temperature sensor is used, which outputs the current temperature. Depending on predefined temperature intervals, the speed of the "FanMotor" is increased; also, an LED lights up to indicate the corresponding level (Green: "OK", Yellow: "Warm", Red: "Hot").
 
-> Für genauerer Informationen zum Board und den Komponenten, siehe [m121.ch](https://www.m121.ch)
+> For more information visit: [m121.ch](https://www.m121.ch)
 
 ## Schema
 
@@ -10,24 +10,47 @@ IoT-Education-Board 1.3.1
 
 ![alt text](/M121/images/m121-schema.jpg)
 
-## Componants
+## Controller Logic
 
-### esp32
+### PWM
 
-![alt text](/M121/images/esp32-olimex-dev-lipo.jpg)
+PWM (Pulse Width Modulation) is a method used to control the amount of power delivered to a device, like a motor or LED. It works by rapidly turning the power on and off at varying intervals, where the duration of the 'on' time (pulse width) determines the average power supplied. By changing the ratio of 'on' time to 'off' time, PWM can effectively control the speed, brightness, or position of the device.
 
-### temp sensor
+The modulation signal influences the duty cycle: By changing the duty cycle of the PWM signal, you effectively control the average power or voltage delivered to a device. In applications like motor control, this control over average power translates to control over the speed or position of the motor.
 
-![alt text](/M121/images/temp-sensor.jpg)
+![alt text](/M121/images/pwm-signal.png)
 
-### fan 
+### Duty-Cycle
 
-![alt text](/M121/images/fan.jpg)
+![alt text](/M121/images/duty-cycle.JPG)
 
-### IoT Education Board, full setup
+To calculate the duty cycle percentage, you divide the ON time by the total time (period) and then multiply by 100. In this case:
 
-![alt text](/M121/images/full-setup.jpg)
+For a duty cycle of 0:
 
+Duty cycle percentage = (0 / 255) * 100 = 0%
+For a duty cycle of 175:
+
+Duty cycle percentage = (175 / 255) * 100 ≈ 68.63%
+For a duty cycle of 255:
+
+Duty cycle percentage = (255 / 255) * 100 = 100%
+
+### System-Diagram
+
+![alt text](/M121/images/system-diagram.png.png)
+
+### Truth Table
+
+- HIGH (H) represents a logic level of 1 or a voltage level that activates the corresponding input.
+- LOW (L) represents a logic level of 0 or a voltage level that deactivates the corresponding input.
+
+| INA | INB | Motor Direction     |
+| --- | --- | ------------------- |
+|  H  |  L  |   Clockwise         |
+|  L  |  H  | Counter-clockwise   |
+|  H  |  H  |      Brake          |
+|  L  |  L  |      Brake          |
 
 ## Code
 
@@ -126,3 +149,21 @@ void loop() {
   }
 }
 ```
+
+## Componants
+
+### esp32
+
+![alt text](/M121/images/esp32-olimex-dev-lipo.jpg)
+
+### temp sensor
+
+![alt text](/M121/images/temp-sensor.jpg)
+
+### fan 
+
+![alt text](/M121/images/fan.jpg)
+
+### IoT Education Board, full setup
+
+![alt text](/M121/images/full-setup.jpg)
