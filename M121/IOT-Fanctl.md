@@ -8,7 +8,26 @@ In diesem Dokument wird unser M121-Projekt vorgestellt. Dieses hat das Ziel, äh
 
 IoT-Education-Board 1.3.1
 
-![alt text](/M121/m121-schema.jpg)
+![alt text](/M121/images/m121-schema.jpg)
+
+## Componants
+
+### esp32
+
+![alt text](/M121/images/esp32-olimex-dev-lipo.jpg)
+
+### temp sensor
+
+![alt text](/M121/images/temp-sensor.jpg)
+
+### fan 
+
+![alt text](/M121/images/fan.jpg)
+
+### IoT Education Board, full setup
+
+![alt text](/M121/images/full-setup.jpg)
+
 
 ## Code
 
