@@ -99,7 +99,68 @@ samba_dnsupdate --verbose
 Reverse Lookup-Zone per samba-tool einrichten:
 ```bash
 # Zone kreieren
-sudo samba-tool dns zonecreate vmLS1 110.168.192.in-addr.arpa -Uadministrator
+samba-tool dns zonecreate vmLS1 110.168.192.in-addr.arpa -Uadministrator
 # Reverse Lookup Zone einrichten
-sudo samba-tool dns add 192.168.110.61 110.168.192.in-addr.arpa 61 PTR vmls1.sam159.iet-gibb.ch -Uadministrator
+samba-tool dns add 192.168.110.61 110.168.192.in-addr.arpa 61 PTR vmLS1.sam159.iet-gibb.ch -U administrator
 ```
+### A und PTR Records eintragen
+A record für vmls2:
+```bash
+samba-tool dns add vmLS1.sam159.iet-gibb.ch sam159.iet-gibb.ch vmLS2 A 192.168.110.62 -U administrator
+```
+Pointer-Record in Reverse-Zone für vmls2:
+```bash
+samba-tool dns add vmLS1.sam159.iet-gibb.ch 110.168.192.in-addr.arpa 63 PTR vmLS2.sam159.iet -U administrator
+```
+A record für vmlp1:
+```bash
+samba-tool dns add vmLS1.sam159.iet-gibb.ch sam159.iet-gibb.ch vmLP1 A 192.168.110.30 -U administrator
+```
+Pointer-Record in Reverse-Zone für vmlp1:
+```bash
+samba-tool dns add vmLS1.sam159.iet-gibb.ch 110.168.192.in-addr.arpa 30 PTR vmLP1.sam159.iet -U administrator
+```
+
+# AB01
+
+## 4.1
+
+```bash
+sudo netstat -tlpn
+```
+445: KDC
+389: LDAP
+636: LDAPS (LDAP over SSL)
+88: Kerberos authentication protocol
+53: DNS
+
+## 4.2
+Ticket lösen für user administrator
+```bash
+kinit administrator@SAM159.IET-GIBB.CH
+```
+
+Ticket kontrollieren
+```bash
+klist
+```
+![alt text](images/klist.png)
+
+## 4.5
+
+Die authentifizierung ist nicht erfolgreich
+
+![alt text](images/smbclient-localhost.png)
+
+## 4.6
+
+```bash
+sudo samba-tool domain passwordsettings set --complexity=off
+sudo samba-tool domain passwordsettings set --history-length=0
+sudo samba-tool domain passwordsettings set --min-pwd-age=0
+sudo samba-tool domain passwordsettings set --max-pwd-age=0
+sudo samba-tool user setexpiry Administrator --noexpiry
+```
+
+# 
+
