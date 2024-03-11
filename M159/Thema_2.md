@@ -387,8 +387,30 @@ smb.conf wird zu smb.conf.master umbennent
 ```bash
 sudo cp smb.conf smb.conf.master
 ```
-Folgende Zeile im [ global ] von smb.conf hinzufügen: `config backend = registry`
+Folgende Zeile im [ global ] von smb.conf hinzufügen: `config backend = registry` alles andere weg!
 
+!!! Nicht importieren !!!
 
 ## 2.4
+
+`sudo testparm`
+
+# AB05
+
+## Shares erstellen auf vmLS2
+
+```bash
+sudo mkdir -p /daten/reg-share
+sudo net conf addshare reg-share /daten/reg-share writeable=yes guest_ok=n "Share in der Registry"
+```
+
+Share auflisten
+
+```bash
+smbclient -L vmls2
+```
+
+## 2.3
+
+Keine Berechtigung
 
