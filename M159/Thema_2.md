@@ -194,6 +194,33 @@ sudo samba-tool domain passwordsettings set --max-pwd-age=0
 sudo samba-tool user setexpiry Administrator --noexpiry
 ```
 
+## 4.7
+
+A Record anlegen
+
+```bash
+samba-tool dns add vmls1.sam159.iet-gibb.com sam159.iet-gibb.ch host1 A 192.168.110.100 -U administrator
+```
+
+PTR Record anlegen
+
+```bash
+samba-tool dns add vmls1.sam159.iet-gibb.ch 110.168.192.in-addr.arpa 110.168.192 PTR host1 -U administrator
+```
+
+## 4.8
+
+A Record löschen
+
+```bash
+samba-tool dns delete vmls1.sam159.iet-gibb.ch sam159.iet-gibb.ch host1 A 192.168.110.100 -U administrator
+```
+## 4.9
+
+FSMO - Flexible Single Master Operations
+
+NT Windows Directory Service -> Windows NT Architektur
+
 # AB03
 
 ## Domäne mit vmWP1 beitreten
@@ -313,6 +340,14 @@ Benutzer zur Gruppe hinzufügen
 sudo samba-tool group addmembers test testuser1
 ```
 
+### 3.3
+
+Objekte im LDAP auflisten -> `ldap-utils`
+
+```bash
+ldapsearch -x -H ldap://127.0.0.1 -D "cn=administrator,dc=sam159,dc=iet-gibb,dc=ch" -W -b "dc=sam159,dc=iet-gibb,dc=ch" "(objectClass=*)"
+```
+
 # AB04
 
 ## Registry verwenden zum Konfigurieren
@@ -350,8 +385,10 @@ Navigiere im Registry > Vmls2 > HKEY_LOCAL_MACHINE > SOFTWARE > Samba > smbconf 
 smb.conf wird zu smb.conf.master umbennent
 
 ```bash
-sudo mv smb.conf smb.conf.master
+sudo cp smb.conf smb.conf.master
 ```
+Folgende Zeile im [ global ] von smb.conf hinzufügen: `config backend = registry`
+
 
 ## 2.4
 
