@@ -185,3 +185,36 @@ $TTL    604800
 ### Forward DNS Server
 
 `/etc/bind/named.conf.options`
+
+```conf
+acl "acl_trusted_clients" {
+    127.0.0.0/8; // localhost (RFC 3330) - Loopback-Device addresses 127.0.0.0 - 127.255.255.255
+    192.168.0.0/16; // Private Network (RFC 1918) - e. e. LAN 192.168.0.0 - 192.168.255.255
+    };
+
+options {
+    directory "/var/cache/bind";
+
+    allow-query {
+        acl_trusted_clients;
+        };
+
+    forwarders {
+        8.8.8.8;
+        8.8.4.4;
+        //OpenDNS
+        208.67.222.222;
+        208.67.220.220;
+        };
+
+    auth-nxdomain no; // no ist default. NXDOMAIN: Domain does not exist. Bei no keine auth. Antwort
+    };
+```
+
+### apply configs
+
+```shell
+sudo netplan apply
+sudo systemctl restart bind9.service
+sudo named-checkconf -z
+```
