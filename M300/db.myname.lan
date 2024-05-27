@@ -1,0 +1,34 @@
+$ORIGIN smartlearn.lan.
+    $TTL    604800
+    @       IN      SOA     vmls3.smartlearn.dmz.
+vmadmin.vmls3.smartlearn.dmz. (
+    2020051604      ; Serial
+    604800          ; Refresh
+    86400           ; Retry
+    2419200         ; Expire
+    604800 )        ; Negative Cache TTL
+    ;
+    ;
+    ; Name Servers
+    ;
+    ;@      IN      NS      ns.smartlearn.dmz.
+    smartlearn.lan. IN      NS      vmls3.smartlearn.dmz.  ; vmls3 is a nameserver for smartlearn.lan
+    ;
+    ; Host addresses
+    ;
+    @       IN      AAAA    ::1
+    vmls3   IN      A       192.168.220.12
+    vmlf1   IN      A       192.168.210.1
+    vmwp1   IN      A       192.168.210.10
+    vmlp1   IN      A       192.168.210.30
+    vmls4   IN      A       192.168.210.60
+    vmls5   IN      A       192.168.210.61
+    ;
+    ; Aliases
+    ;
+    www     IN      CNAME       vmls5.smartlearn.lan.
+;www.smartlearn.lan is an alias for vmls3.smartlearn.lan
+    ftp     IN      CNAME       vmls5.smartlearn.lan.
+;ftp.smartlearn.lan is an alias for vmls3.smartlearn.lan
+    ns      IN      CNAME       vmls3.smartlearn.dmz.
+;ns.smartlearn.dmz is an alias for vmls3.smartlearn.dmz
