@@ -1,15 +1,19 @@
-Domain Name Service (DNS)
+# Domain Name Service (DNS)
 
 Domain Name Service (DNS) is an Internet service that maps IP addresses and fully qualified domain names (FQDN) to one another. In this way, DNS alleviates the need to remember IP addresses. Computers that run DNS are called name servers. Ubuntu ships with the Berkley Internet Naming Daemon (BIND), the most common program used for maintaining a name server on Linux.
 Install DNS
 
 At a terminal prompt, run the following command to install the bind9 package:
 
+```shell
 sudo apt install bind9
+```
 
 A useful package for testing and troubleshooting DNS issues is the dnsutils package. Very often these tools will be installed already, but to check and/or install dnsutils enter the following:
 
+```shell
 sudo apt install dnsutils
+```
 
 DNS configuration overview
 
@@ -36,10 +40,12 @@ Set up a caching nameserver
 
 The default configuration acts as a caching server. Simply uncomment and edit /etc/bind/named.conf.options to set the IP addresses of your ISP’s DNS servers:
 
+```
 forwarders {
     1.2.3.4;
     5.6.7.8;
 };
+```
 
     Note:
     Replace 1.2.3.4 and 5.6.7.8 with the IP addresses of actual nameservers.
@@ -56,10 +62,12 @@ Forward zone file
 
 To add a DNS zone to BIND9, turning BIND9 into a primary server, first edit /etc/bind/named.conf.local:
 
+```
 zone "example.com" {
     type master;
     file "/etc/bind/db.example.com";
 };
+```
 
     Note:
     If BIND will be receiving automatic updates to the file as with DDNS, then use /var/lib/bind/db.example.com rather than /etc/bind/db.example.com both here and in the copy command below.
@@ -72,6 +80,7 @@ Edit the new zone file /etc/bind/db.example.com and change localhost. to the FQD
 
 Create an A record for the base domain, example.com. Also, create an A record for ns.example.com, the name server in this example:
 
+```
 ;
 ; BIND data file for example.com
 ;
@@ -87,6 +96,7 @@ $TTL    604800
 @       IN      A       192.168.1.10
 @       IN      AAAA    ::1
 ns      IN      A       192.168.1.10
+```
 
 You must increment the Serial Number every time you make changes to the zone file. If you make multiple changes before restarting BIND9, only increment Serial once.
 
@@ -105,10 +115,12 @@ Now that the zone is set up and resolving names to IP Addresses, a reverse zone 
 
 Edit /etc/bind/named.conf.local and add the following:
 
+```
 zone "1.168.192.in-addr.arpa" {
     type master;
     file "/etc/bind/db.192";
 };
+```
 
     Note:
     Replace 1.168.192 with the first three octets of whatever network you are using. Also, name the zone file /etc/bind/db.192 appropriately. It should match the first octet of your network.
@@ -119,6 +131,7 @@ sudo cp /etc/bind/db.127 /etc/bind/db.192
 
 Next edit /etc/bind/db.192, changing the same options as /etc/bind/db.example.com:
 
+```
 ;
 ; BIND reverse data file for local 192.168.1.XXX net
 ;
@@ -132,6 +145,7 @@ $TTL    604800
 ;
 @       IN      NS      ns.
 10      IN      PTR     ns.example.com.
+```
 
 The Serial Number in the reverse zone needs to be incremented on each change as well. For each A record you configure in /etc/bind/db.example.com that is for a different address, you will need to create a PTR record in /etc/bind/db.192.
 
@@ -145,6 +159,7 @@ Once a primary server has been configured, a secondary server is highly recommen
 
 First, on the primary server, the zone transfer needs to be allowed. Add the allow-transfer option to the example Forward and Reverse zone definitions in /etc/bind/named.conf.local:
 
+```
 zone "example.com" {
     type master;
     file "/etc/bind/db.example.com";
@@ -156,6 +171,7 @@ zone "1.168.192.in-addr.arpa" {
     file "/etc/bind/db.192";
     allow-transfer { 192.168.1.11; };
 };
+```
 
     Note:
     Replace 192.168.1.11 with the IP address of your secondary nameserver.
@@ -166,6 +182,7 @@ sudo systemctl restart bind9.service
 
 Next, on the secondary server, install the bind9 package the same way as on the primary. Then edit the /etc/bind/named.conf.local and add the following declarations for the Forward and Reverse zones:
 
+```
 zone "example.com" {
     type secondary;
     file "db.example.com";
@@ -177,6 +194,7 @@ zone "1.168.192.in-addr.arpa" {
     file "db.192";
     masters { 192.168.1.10; };
 };
+```
 
 Once again, replace 192.168.1.10 with the IP address of your primary nameserver, then restart BIND9 on the secondary server:
 
@@ -204,6 +222,7 @@ transfer of 'example.com/IN' from 192.168.1.10#53: Transfer completed: 1 message
     Note:
     A zone is only transferred if the Serial Number on the primary is larger than the one on the secondary. If you want to have your primary DNS notify other secondary DNS servers of zone changes, you can add also-notify { ipaddress; }; to /etc/bind/named.conf.local as shown in the example below:
 
+```
 zone "example.com" {
     type master;
     file "/etc/bind/db.example.com";
@@ -217,7 +236,7 @@ zone "1.168.192.in-addr.arpa" {
     allow-transfer { 192.168.1.11; };
     also-notify { 192.168.1.11; }; 
 };
-    
+```    
 
     Note:
     The default directory for non-authoritative zone files is /var/cache/bind/. This directory is also configured in AppArmor to allow the named daemon to write to it. See this page for more information on AppArmor.
